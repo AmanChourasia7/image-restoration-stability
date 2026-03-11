@@ -10,10 +10,16 @@ from metrics import psnr
 
 def train():
 
-    device = torch.device(Config.device if torch.cuda.is_available() else "cpu")
+    print("Starting training script")
 
+    device = torch.device(Config.device if torch.cuda.is_available() else "cpu")
+    print("Device:", device)
+
+    print("Loading datasets...")
     train_dataset = NoisyDataset(train=True)
     test_dataset = NoisyDataset(train=False)
+
+    print("Datasets loaded")
 
     train_loader = DataLoader(
         train_dataset,
@@ -29,7 +35,10 @@ def train():
         num_workers=0
     )
 
+    print("Dataloaders created")
+
     model = DnCNN().to(device)
+    print("Model initialized")
 
     criterion = nn.MSELoss()
 
@@ -37,6 +46,8 @@ def train():
         model.parameters(),
         lr=Config.learning_rate
     )
+
+    print("Starting training loop")
 
     for epoch in range(Config.epochs):
 
@@ -64,6 +75,8 @@ def train():
 
 
 def evaluate(model, loader, device):
+
+    print("Running evaluation")
 
     model.eval()
 
