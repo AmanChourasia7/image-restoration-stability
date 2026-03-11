@@ -10,15 +10,11 @@ from metrics import psnr
 
 def train():
 
-    print("Starting training script")
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
 
-    print("Loading datasets...")
     train_dataset = NoisyDataset(train=True)
     test_dataset = NoisyDataset(train=False)
-    print("Datasets loaded")
 
     train_loader = DataLoader(
         train_dataset,
@@ -34,31 +30,19 @@ def train():
         num_workers=0
     )
 
-    print("Dataloaders created")
-
     model = DnCNN().to(device)
-    print("Model initialized")
 
     criterion = nn.MSELoss()
-
-    optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=Config.learning_rate
-    )
-
-    print("Starting training loop")
+    optimizer = torch.optim.Adam(model.parameters(), lr=Config.learning_rate)
 
     for epoch in range(Config.epochs):
 
         model.train()
         total_loss = 0
 
-        print("Epoch", epoch, "starting...")
+        print("\nEpoch", epoch, "starting")
 
         for i, (noisy, clean) in enumerate(train_loader):
-
-            if i == 0:
-                print("First batch loaded")
 
             noisy = noisy.to(device)
             clean = clean.to(device)
@@ -73,14 +57,15 @@ def train():
 
             total_loss += loss.item()
 
-        print("Epoch:", epoch, "Loss:", total_loss)
+            if i % 100 == 0:
+                print("Batch", i, "Loss:", loss.item())
+
+        print("Epoch", epoch, "Loss:", total_loss)
 
         evaluate(model, test_loader, device)
 
 
 def evaluate(model, loader, device):
-
-    print("Running evaluation")
 
     model.eval()
 
