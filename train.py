@@ -12,13 +12,12 @@ def train():
 
     print("Starting training script")
 
-    device = torch.device(Config.device if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
 
     print("Loading datasets...")
     train_dataset = NoisyDataset(train=True)
     test_dataset = NoisyDataset(train=False)
-
     print("Datasets loaded")
 
     train_loader = DataLoader(
@@ -54,7 +53,12 @@ def train():
         model.train()
         total_loss = 0
 
-        for noisy, clean in train_loader:
+        print("Epoch", epoch, "starting...")
+
+        for i, (noisy, clean) in enumerate(train_loader):
+
+            if i == 0:
+                print("First batch loaded")
 
             noisy = noisy.to(device)
             clean = clean.to(device)
@@ -95,7 +99,7 @@ def evaluate(model, loader, device):
             total_psnr += psnr(output, clean)
             count += 1
 
-    print("Test PSNR:", total_psnr / count)
+    print("Test PSNR:", (total_psnr / count).item())
 
 
 if __name__ == "__main__":
