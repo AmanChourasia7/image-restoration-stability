@@ -8,8 +8,8 @@ class Config:
     noise_sigma = 25
     
     # training parameters
-    batch_size = 16
-    epochs = 50
+    batch_size = 64
+    epochs = 5
     learning_rate = 0.0002
     
     # optimizer
