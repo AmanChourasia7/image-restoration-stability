@@ -18,13 +18,15 @@ def train():
     train_loader = DataLoader(
         train_dataset,
         batch_size=Config.batch_size,
-        shuffle=True
+        shuffle=True,
+        num_workers=0
     )
 
     test_loader = DataLoader(
         test_dataset,
         batch_size=Config.batch_size,
-        shuffle=False
+        shuffle=False,
+        num_workers=0
     )
 
     model = DnCNN().to(device)
